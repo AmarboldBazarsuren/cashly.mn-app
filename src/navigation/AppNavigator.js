@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../contexts/AuthContext';
@@ -21,11 +21,9 @@ import DepositScreen from '../screens/wallet/DepositScreen';
 import WithdrawScreen from '../screens/wallet/WithdrawScreen';
 import TransactionHistoryScreen from '../screens/wallet/TransactionHistoryScreen';
 
-const Stack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// ЗАСВАР: screenOptions объектыг function болгов
-// react-native-screens v4 нь prop-уудыг илүү чанд шалгадаг болсон
 function BottomTabNavigator() {
   return (
     <Tab.Navigator
@@ -63,42 +61,17 @@ function BottomTabNavigator() {
         },
       })}
     >
-      <Tab.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ tabBarLabel: 'Нүүр' }}
-      />
-      <Tab.Screen
-        name="Loans"
-        component={LoansScreen}
-        options={{ tabBarLabel: 'Зээл' }}
-      />
-      <Tab.Screen
-        name="Wallet"
-        component={WalletScreen}
-        options={{ tabBarLabel: 'Хэтэвч' }}
-      />
-      <Tab.Screen
-        name="Profile"
-        component={ProfileScreen}
-        options={{ tabBarLabel: 'Профайл' }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Нүүр' }} />
+      <Tab.Screen name="Loans" component={LoansScreen} options={{ tabBarLabel: 'Зээл' }} />
+      <Tab.Screen name="Wallet" component={WalletScreen} options={{ tabBarLabel: 'Хэтэвч' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Профайл' }} />
     </Tab.Navigator>
   );
 }
 
-// ЗАСВАР: headerShown зөвхөн boolean утга авна
-// animationEnabled, gestureEnabled - boolean байх ёстой
 function AuthStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        animationEnabled: true,
-        gestureEnabled: true,
-        cardOverlayEnabled: true,
-      }}
-    >
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
@@ -107,24 +80,14 @@ function AuthStack() {
 
 function MainStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        animationEnabled: true,
-        gestureEnabled: true,
-        cardOverlayEnabled: true,
-      }}
-    >
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
       <Stack.Screen name="KYC" component={KYCScreen} />
       <Stack.Screen name="ApplyLoan" component={ApplyLoanScreen} />
       <Stack.Screen name="LoanDetail" component={LoanDetailScreen} />
       <Stack.Screen name="Deposit" component={DepositScreen} />
       <Stack.Screen name="Withdraw" component={WithdrawScreen} />
-      <Stack.Screen
-        name="TransactionHistory"
-        component={TransactionHistoryScreen}
-      />
+      <Stack.Screen name="TransactionHistory" component={TransactionHistoryScreen} />
     </Stack.Navigator>
   );
 }

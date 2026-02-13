@@ -1,7 +1,6 @@
 /**
  * CASHLY APP - Home Screen
- * БАЙРШИЛ: Cashly.mn/App/src/screens/main/HomeScreen.js
- * Үндсэн dashboard
+ * ЗАСВАРЛАСАН: Alert import нэмэгдсэн
  */
 
 import React, { useEffect, useState } from 'react';
@@ -13,6 +12,7 @@ import {
   RefreshControl,
   TouchableOpacity,
   Platform,
+  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -65,63 +65,46 @@ const HomeScreen = ({ navigation }) => {
     setRefreshing(false);
   };
 
-  // Quick Actions
   const quickActions = [
-  {
-    icon: 'cash-outline',
-    label: 'Зээл авах',
-    color: COLORS.primary,
-    onPress: () => {
-      if (!user) {
-        return;
-      }
-      
-      if (user.kycStatus !== 'approved') {
-        navigation.navigate('KYC');
-      } else if (user.creditLimit === 0) {
-        Alert.alert('Мэдэгдэл', 'Зээлийн эрх тогтоогдоогүй байна. Админтай холбогдоно уу.');
-      } else {
-        navigation.navigate('ApplyLoan');
-      }
+    {
+      icon: 'cash-outline',
+      label: 'Зээл авах',
+      color: COLORS.primary,
+      onPress: () => {
+        if (!user) return;
+        if (user.kycStatus !== 'approved') {
+          navigation.navigate('KYC');
+        } else if (!user.creditLimit || user.creditLimit === 0) {
+          Alert.alert('Мэдэгдэл', 'Зээлийн эрх тогтоогдоогүй байна. Админтай холбогдоно уу.');
+        } else {
+          navigation.navigate('ApplyLoan');
+        }
+      },
     },
-  },
-  {
-    icon: 'wallet-outline',
-    label: 'Цэнэглэх',
-    color: COLORS.secondary,
-    onPress: () => {
-      if (navigation && typeof navigation.navigate === 'function') {
-        navigation.navigate('Deposit');
-      }
+    {
+      icon: 'wallet-outline',
+      label: 'Цэнэглэх',
+      color: COLORS.secondary,
+      onPress: () => navigation.navigate('Deposit'),
     },
-  },
-  {
-    icon: 'arrow-up-outline',
-    label: 'Татах',
-    color: COLORS.accent,
-    onPress: () => {
-      if (navigation && typeof navigation.navigate === 'function') {
-        navigation.navigate('Withdraw');
-      }
+    {
+      icon: 'arrow-up-outline',
+      label: 'Татах',
+      color: COLORS.accent,
+      onPress: () => navigation.navigate('Withdraw'),
     },
-  },
-  {
-    icon: 'time-outline',
-    label: 'Түүх',
-    color: COLORS.info,
-    onPress: () => {
-      if (navigation && typeof navigation.navigate === 'function') {
-        navigation.navigate('TransactionHistory');
-      }
+    {
+      icon: 'time-outline',
+      label: 'Түүх',
+      color: COLORS.info,
+      onPress: () => navigation.navigate('TransactionHistory'),
     },
-  },
-];
+  ];
 
   return (
     <View style={styles.container}>
       <StatusBar style="light" />
       
-      {/* Header */}
       <LinearGradient colors={COLORS.gradient.primary} style={styles.header}>
         <View style={styles.headerTop}>
           <View>
@@ -133,7 +116,6 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {/* Wallet Card */}
         <View style={styles.walletCard}>
           <Text style={styles.walletLabel}>Нийт үлдэгдэл</Text>
           <Text style={styles.walletBalance}>
@@ -157,7 +139,6 @@ const HomeScreen = ({ navigation }) => {
         </View>
       </LinearGradient>
 
-      {/* Content */}
       <ScrollView
         style={styles.content}
         showsVerticalScrollIndicator={false}
@@ -165,7 +146,6 @@ const HomeScreen = ({ navigation }) => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        {/* Quick Actions */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Үйлдлүүд</Text>
           <View style={styles.quickActions}>
@@ -184,7 +164,6 @@ const HomeScreen = ({ navigation }) => {
           </View>
         </View>
 
-        {/* KYC Status */}
         {user?.kycStatus !== 'approved' && (
           <TouchableOpacity
             style={styles.kycBanner}
@@ -201,7 +180,6 @@ const HomeScreen = ({ navigation }) => {
           </TouchableOpacity>
         )}
 
-        {/* Active Loans */}
         {loans.length > 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Идэвхтэй зээлүүд</Text>
@@ -271,7 +249,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.15)',
     borderRadius: LAYOUT.radius.lg,
     padding: LAYOUT.padding.card + 4,
-    backdropFilter: 'blur(10px)',
   },
   walletLabel: {
     fontSize: FONTS.size.sm,
