@@ -1,6 +1,6 @@
 /**
  * CASHLY APP - Input Component
- * ЗАСВАРЛАСАН - Boolean type асуудал бүрэн арилгасан
+ * ЗАСВАРЛАСАН - Boolean type болон react-native-screens v4 зөрчил засагдсан
  */
 
 import React, { useState } from 'react';
@@ -15,17 +15,19 @@ const Input = ({
   value,
   onChangeText,
   placeholder,
-  secureTextEntry,
+  secureTextEntry = false,
   keyboardType = 'default',
   error,
   icon,
   rightIcon,
   maxLength,
-  editable,
-  multiline,
+  editable = true,
+  multiline = false,
   numberOfLines = 1,
   style,
   inputStyle,
+  autoCapitalize = 'none',
+  autoCorrect = false,
   ...props
 }) => {
   const [isFocused, setIsFocused] = useState(false);
@@ -34,6 +36,11 @@ const Input = ({
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
+
+  // ЗАСВАР: Boolean утгуудыг тодорхой !! оператороор boolean болгох
+  const isSecure = !!secureTextEntry && !showPassword;
+  const isMultiline = !!multiline;
+  const isEditable = editable !== false;
 
   return (
     <View style={[styles.container, style]}>
@@ -46,7 +53,7 @@ const Input = ({
           styles.inputContainer,
           isFocused ? styles.inputContainerFocused : null,
           error ? styles.inputContainerError : null,
-          editable === false ? styles.inputContainerDisabled : null,
+          !isEditable ? styles.inputContainerDisabled : null,
         ]}
       >
         {icon ? (
@@ -58,25 +65,30 @@ const Input = ({
         <TextInput
           style={[
             styles.input,
-            multiline === true ? styles.inputMultiline : null,
+            isMultiline ? styles.inputMultiline : null,
             inputStyle,
           ]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
           placeholderTextColor={COLORS.textDisabled}
-          secureTextEntry={secureTextEntry === true && !showPassword}
+          // ЗАСВАР: secureTextEntry заавал boolean байх ёстой
+          secureTextEntry={isSecure}
           keyboardType={keyboardType}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          editable={editable === false ? false : true}
+          // ЗАСВАР: editable заавал boolean байх ёстой
+          editable={isEditable}
           maxLength={maxLength}
-          multiline={multiline === true ? true : false}
-          numberOfLines={numberOfLines}
+          // ЗАСВАР: multiline заавал boolean байх ёстой
+          multiline={isMultiline}
+          numberOfLines={isMultiline ? numberOfLines : 1}
+          autoCapitalize={autoCapitalize}
+          autoCorrect={autoCorrect}
           {...props}
         />
 
-        {secureTextEntry === true ? (
+        {!!secureTextEntry ? (
           <TouchableOpacity
             onPress={togglePasswordVisibility}
             style={styles.iconContainer}

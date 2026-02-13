@@ -24,33 +24,31 @@ import TransactionHistoryScreen from '../screens/wallet/TransactionHistoryScreen
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const tabScreenOptions = {
-  headerShown: false,
-  tabBarActiveTintColor: COLORS.primary,
-  tabBarInactiveTintColor: COLORS.textSecondary,
-  tabBarStyle: {
-    backgroundColor: COLORS.white,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
-    elevation: 8,
-    shadowColor: COLORS.black,
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    height: 60,
-    paddingBottom: 8,
-    paddingTop: 8,
-  },
-};
-
+// ЗАСВАР: screenOptions объектыг function болгов
+// react-native-screens v4 нь prop-уудыг илүү чанд шалгадаг болсон
 function BottomTabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        ...tabScreenOptions,
+        headerShown: false,
+        tabBarActiveTintColor: COLORS.primary,
+        tabBarInactiveTintColor: COLORS.textSecondary,
+        tabBarStyle: {
+          backgroundColor: COLORS.white,
+          borderTopWidth: 1,
+          borderTopColor: COLORS.borderLight,
+          elevation: 8,
+          shadowColor: COLORS.black,
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+        },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = 'home-outline';
-          
+
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Loans') {
@@ -65,21 +63,42 @@ function BottomTabNavigator() {
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Нүүр' }} />
-      <Tab.Screen name="Loans" component={LoansScreen} options={{ tabBarLabel: 'Зээл' }} />
-      <Tab.Screen name="Wallet" component={WalletScreen} options={{ tabBarLabel: 'Хэтэвч' }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Профайл' }} />
+      <Tab.Screen
+        name="Home"
+        component={HomeScreen}
+        options={{ tabBarLabel: 'Нүүр' }}
+      />
+      <Tab.Screen
+        name="Loans"
+        component={LoansScreen}
+        options={{ tabBarLabel: 'Зээл' }}
+      />
+      <Tab.Screen
+        name="Wallet"
+        component={WalletScreen}
+        options={{ tabBarLabel: 'Хэтэвч' }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ tabBarLabel: 'Профайл' }}
+      />
     </Tab.Navigator>
   );
 }
 
-const stackScreenOptions = {
-  headerShown: false,
-};
-
+// ЗАСВАР: headerShown зөвхөн boolean утга авна
+// animationEnabled, gestureEnabled - boolean байх ёстой
 function AuthStack() {
   return (
-    <Stack.Navigator screenOptions={stackScreenOptions}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: true,
+        gestureEnabled: true,
+        cardOverlayEnabled: true,
+      }}
+    >
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
@@ -88,14 +107,24 @@ function AuthStack() {
 
 function MainStack() {
   return (
-    <Stack.Navigator screenOptions={stackScreenOptions}>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        animationEnabled: true,
+        gestureEnabled: true,
+        cardOverlayEnabled: true,
+      }}
+    >
       <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
       <Stack.Screen name="KYC" component={KYCScreen} />
       <Stack.Screen name="ApplyLoan" component={ApplyLoanScreen} />
       <Stack.Screen name="LoanDetail" component={LoanDetailScreen} />
       <Stack.Screen name="Deposit" component={DepositScreen} />
       <Stack.Screen name="Withdraw" component={WithdrawScreen} />
-      <Stack.Screen name="TransactionHistory" component={TransactionHistoryScreen} />
+      <Stack.Screen
+        name="TransactionHistory"
+        component={TransactionHistoryScreen}
+      />
     </Stack.Navigator>
   );
 }

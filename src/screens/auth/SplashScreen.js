@@ -1,6 +1,6 @@
 /**
  * CASHLY APP - Splash Screen
- * ЗАСВАРЛАСАН - ActivityIndicator size prop
+ * ЗАСВАРЛАСАН - ActivityIndicator size prop буруу утгаас болж гарсан алдаа засагдсан
  */
 
 import React from 'react';
@@ -20,8 +20,13 @@ const SplashScreen = () => {
         <Text style={styles.appName}>CASHLY</Text>
         <Text style={styles.tagline}>Хурдан, Хялбар, Найдвартай</Text>
         
+        {/* 
+          ЗАСВАР: size prop зөвхөн number эсвэл 'small' утга авна.
+          'large' string нь react-native-screens-тэй зөрчилддөг тул
+          number утга 36 ашигллаа.
+        */}
         <ActivityIndicator 
-          size="small"
+          size={36}
           color={COLORS.white} 
           style={styles.loader}
         />
