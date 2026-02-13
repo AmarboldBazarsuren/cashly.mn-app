@@ -37,19 +37,27 @@ const RegisterScreen = ({ navigation }) => {
   const handleRegister = async () => {
     const newErrors = {};
     
-    if (!validateName(name)) {
+    if (!name || name.trim() === '') {
       newErrors.name = 'Нэрээ оруулна уу';
+    } else if (!validateName(name)) {
+      newErrors.name = 'Нэр багадаа 2 тэмдэгттэй байх ёстой';
     }
     
-    if (!validatePhone(phoneNumber)) {
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      newErrors.phoneNumber = 'Утасны дугаар оруулна уу';
+    } else if (!validatePhone(phoneNumber)) {
       newErrors.phoneNumber = 'Утасны дугаар буруу байна (8 орон)';
     }
     
-    if (!validatePassword(password)) {
+    if (!password || password.trim() === '') {
+      newErrors.password = 'Нууц үг оруулна уу';
+    } else if (!validatePassword(password)) {
       newErrors.password = 'Нууц үг багадаа 6 тэмдэгттэй байх ёстой';
     }
     
-    if (!validatePasswordMatch(password, confirmPassword)) {
+    if (!confirmPassword || confirmPassword.trim() === '') {
+      newErrors.confirmPassword = 'Нууц үгээ давтан оруулна уу';
+    } else if (!validatePasswordMatch(password, confirmPassword)) {
       newErrors.confirmPassword = 'Нууц үг таарахгүй байна';
     }
     
@@ -65,9 +73,10 @@ const RegisterScreen = ({ navigation }) => {
       const result = await register(phoneNumber, password, name);
       
       if (!result.success) {
-        Alert.alert('Алдаа', result.message);
+        Alert.alert('Алдаа', result.message || 'Бүртгэл үүсгэхэд алдаа гарлаа');
       }
     } catch (error) {
+      console.error('Register error:', error);
       Alert.alert('Алдаа', 'Бүртгэл үүсгэхэд алдаа гарлаа');
     } finally {
       setLoading(false);
@@ -87,10 +96,12 @@ const RegisterScreen = ({ navigation }) => {
       <KeyboardAvoidingView
         style={styles.formContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={styles.formCard}>
             <Input
@@ -99,10 +110,14 @@ const RegisterScreen = ({ navigation }) => {
               value={name}
               onChangeText={(text) => {
                 setName(text);
-                setErrors({ ...errors, name: '' });
+                if (errors.name) {
+                  setErrors({ ...errors, name: '' });
+                }
               }}
               icon="person-outline"
               error={errors.name}
+              autoCapitalize="words"
+              autoCorrect={false}
             />
 
             <Input
@@ -111,12 +126,16 @@ const RegisterScreen = ({ navigation }) => {
               value={phoneNumber}
               onChangeText={(text) => {
                 setPhoneNumber(text);
-                setErrors({ ...errors, phoneNumber: '' });
+                if (errors.phoneNumber) {
+                  setErrors({ ...errors, phoneNumber: '' });
+                }
               }}
               keyboardType="phone-pad"
               maxLength={8}
               icon="call-outline"
               error={errors.phoneNumber}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
 
             <Input
@@ -125,11 +144,15 @@ const RegisterScreen = ({ navigation }) => {
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
-                setErrors({ ...errors, password: '' });
+                if (errors.password) {
+                  setErrors({ ...errors, password: '' });
+                }
               }}
-              secureTextEntry
+              secureTextEntry={true}
               icon="lock-closed-outline"
               error={errors.password}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
 
             <Input
@@ -138,23 +161,34 @@ const RegisterScreen = ({ navigation }) => {
               value={confirmPassword}
               onChangeText={(text) => {
                 setConfirmPassword(text);
-                setErrors({ ...errors, confirmPassword: '' });
+                if (errors.confirmPassword) {
+                  setErrors({ ...errors, confirmPassword: '' });
+                }
               }}
-              secureTextEntry
+              secureTextEntry={true}
               icon="lock-closed-outline"
               error={errors.confirmPassword}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
 
             <Button
               title="Бүртгүүлэх"
               onPress={handleRegister}
               loading={loading}
+              disabled={loading}
               style={styles.registerButton}
             />
 
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>Бүртгэлтэй хэрэглэгч үү? </Text>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity 
+                onPress={() => {
+                  if (navigation && typeof navigation.goBack === 'function') {
+                    navigation.goBack();
+                  }
+                }}
+              >
                 <Text style={styles.loginLink}>Нэвтрэх</Text>
               </TouchableOpacity>
             </View>
@@ -211,6 +245,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 6,
+    marginTop: 20,
   },
   registerButton: {
     marginTop: LAYOUT.spacing.lg,

@@ -44,19 +44,24 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Profile шинэчлэх
-  const refreshProfile = async () => {
-    try {
-      const result = await getProfile();
-      if (result.success) {
-        const userData = result.data.user;
-        setUser(userData);
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));
-      }
-    } catch (error) {
-      console.error('Refresh profile error:', error);
+// Profile шинэчлэх
+const refreshProfile = async () => {
+  try {
+    const result = await getProfile();
+    if (result && result.success && result.data && result.data.user) {
+      const userData = result.data.user;
+      setUser(userData);
+      await AsyncStorage.setItem('userData', JSON.stringify(userData));
+      return { success: true };
+    } else {
+      console.warn('Profile refresh failed:', result);
+      return { success: false };
     }
-  };
-
+  } catch (error) {
+    console.error('Refresh profile error:', error);
+    return { success: false, error };
+  }
+};
   // Нэвтрэх
   const login = async (phoneNumber, password) => {
     try {

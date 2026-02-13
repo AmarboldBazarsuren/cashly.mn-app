@@ -38,11 +38,15 @@ const LoginScreen = ({ navigation }) => {
     // Validation
     const newErrors = {};
     
-    if (!validatePhone(phoneNumber)) {
+    if (!phoneNumber || phoneNumber.trim() === '') {
+      newErrors.phoneNumber = 'Утасны дугаар оруулна уу';
+    } else if (!validatePhone(phoneNumber)) {
       newErrors.phoneNumber = 'Утасны дугаар буруу байна (8 орон)';
     }
     
-    if (!validatePassword(password)) {
+    if (!password || password.trim() === '') {
+      newErrors.password = 'Нууц үг оруулна уу';
+    } else if (!validatePassword(password)) {
       newErrors.password = 'Нууц үг багадаа 6 тэмдэгттэй байх ёстой';
     }
     
@@ -58,9 +62,10 @@ const LoginScreen = ({ navigation }) => {
       const result = await login(phoneNumber, password);
       
       if (!result.success) {
-        Alert.alert('Алдаа', result.message);
+        Alert.alert('Алдаа', result.message || 'Нэвтрэхэд алдаа гарлаа');
       }
     } catch (error) {
+      console.error('Login error:', error);
       Alert.alert('Алдаа', 'Нэвтрэхэд алдаа гарлаа');
     } finally {
       setLoading(false);
@@ -85,10 +90,12 @@ const LoginScreen = ({ navigation }) => {
       <KeyboardAvoidingView
         style={styles.formContainer}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
       >
         <ScrollView 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={styles.formCard}>
             <Text style={styles.formTitle}>Нэвтрэх</Text>
@@ -100,12 +107,16 @@ const LoginScreen = ({ navigation }) => {
               value={phoneNumber}
               onChangeText={(text) => {
                 setPhoneNumber(text);
-                setErrors({ ...errors, phoneNumber: '' });
+                if (errors.phoneNumber) {
+                  setErrors({ ...errors, phoneNumber: '' });
+                }
               }}
               keyboardType="phone-pad"
               maxLength={8}
               icon="call-outline"
               error={errors.phoneNumber}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
 
             {/* Password Input */}
@@ -115,11 +126,15 @@ const LoginScreen = ({ navigation }) => {
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
-                setErrors({ ...errors, password: '' });
+                if (errors.password) {
+                  setErrors({ ...errors, password: '' });
+                }
               }}
-              secureTextEntry
+              secureTextEntry={true}
               icon="lock-closed-outline"
               error={errors.password}
+              autoCapitalize="none"
+              autoCorrect={false}
             />
 
             {/* Forgot Password */}
@@ -134,13 +149,20 @@ const LoginScreen = ({ navigation }) => {
               title="Нэвтрэх"
               onPress={handleLogin}
               loading={loading}
+              disabled={loading}
               style={styles.loginButton}
             />
 
             {/* Register Link */}
             <View style={styles.registerContainer}>
               <Text style={styles.registerText}>Шинэ хэрэглэгч үү? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+              <TouchableOpacity 
+                onPress={() => {
+                  if (navigation && typeof navigation.navigate === 'function') {
+                    navigation.navigate('Register');
+                  }
+                }}
+              >
                 <Text style={styles.registerLink}>Бүртгүүлэх</Text>
               </TouchableOpacity>
             </View>
@@ -186,6 +208,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     paddingHorizontal: LAYOUT.padding.screen,
+    paddingBottom: 40,
   },
   formCard: {
     backgroundColor: COLORS.white,
@@ -196,6 +219,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 6,
+    marginTop: 20,
   },
   formTitle: {
     ...TEXT_STYLES.h4,

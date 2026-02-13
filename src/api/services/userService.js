@@ -17,6 +17,7 @@ export const getProfile = async () => {
       data: response.data.data,
     };
   } catch (error) {
+    console.error('Get profile error:', error);
     return {
       success: false,
       message: error.response?.data?.message || 'Профайл татахад алдаа гарлаа',

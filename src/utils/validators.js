@@ -86,7 +86,7 @@ export const validateAmount = (amount, min = 0, max = Infinity) => {
  * @param {Number} creditLimit
  * @returns {Object} - { valid, message }
  */
-export const validateLoanAmount = (amount, creditLimit) => {
+export const validateLoanAmount = (amount, creditLimit = 0) => {
   if (!amount || amount <= 0) {
     return { valid: false, message: 'Дүн оруулна уу' };
   }
@@ -95,11 +95,18 @@ export const validateLoanAmount = (amount, creditLimit) => {
     return { valid: false, message: 'Хамгийн бага зээл 10,000₮' };
   }
   
-  if (amount > creditLimit) {
-    return { valid: false, message: `Зээлийн эрх хүрэлцэхгүй (${creditLimit.toLocaleString()}₮)` };
+  if (creditLimit === 0) {
+    return { valid: false, message: 'Зээлийн эрх тогтоогдоогүй байна' };
   }
   
-  return { valid: true };
+  if (amount > creditLimit) {
+    return { 
+      valid: false, 
+      message: `Зээлийн эрх хүрэлцэхгүй (${creditLimit.toLocaleString()}₮)` 
+    };
+  }
+  
+  return { valid: true, message: '' };
 };
 
 /**

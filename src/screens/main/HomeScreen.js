@@ -67,37 +67,55 @@ const HomeScreen = ({ navigation }) => {
 
   // Quick Actions
   const quickActions = [
-    {
-      icon: 'cash-outline',
-      label: 'Зээл авах',
-      color: COLORS.primary,
-      onPress: () => {
-        if (user?.kycStatus !== 'approved') {
-          navigation.navigate('KYC');
-        } else {
-          navigation.navigate('ApplyLoan');
-        }
-      },
+  {
+    icon: 'cash-outline',
+    label: 'Зээл авах',
+    color: COLORS.primary,
+    onPress: () => {
+      if (!user) {
+        return;
+      }
+      
+      if (user.kycStatus !== 'approved') {
+        navigation.navigate('KYC');
+      } else if (user.creditLimit === 0) {
+        Alert.alert('Мэдэгдэл', 'Зээлийн эрх тогтоогдоогүй байна. Админтай холбогдоно уу.');
+      } else {
+        navigation.navigate('ApplyLoan');
+      }
     },
-    {
-      icon: 'wallet-outline',
-      label: 'Цэнэглэх',
-      color: COLORS.secondary,
-      onPress: () => navigation.navigate('Deposit'),
+  },
+  {
+    icon: 'wallet-outline',
+    label: 'Цэнэглэх',
+    color: COLORS.secondary,
+    onPress: () => {
+      if (navigation && typeof navigation.navigate === 'function') {
+        navigation.navigate('Deposit');
+      }
     },
-    {
-      icon: 'arrow-up-outline',
-      label: 'Татах',
-      color: COLORS.accent,
-      onPress: () => navigation.navigate('Withdraw'),
+  },
+  {
+    icon: 'arrow-up-outline',
+    label: 'Татах',
+    color: COLORS.accent,
+    onPress: () => {
+      if (navigation && typeof navigation.navigate === 'function') {
+        navigation.navigate('Withdraw');
+      }
     },
-    {
-      icon: 'time-outline',
-      label: 'Түүх',
-      color: COLORS.info,
-      onPress: () => navigation.navigate('TransactionHistory'),
+  },
+  {
+    icon: 'time-outline',
+    label: 'Түүх',
+    color: COLORS.info,
+    onPress: () => {
+      if (navigation && typeof navigation.navigate === 'function') {
+        navigation.navigate('TransactionHistory');
+      }
     },
-  ];
+  },
+];
 
   return (
     <View style={styles.container}>

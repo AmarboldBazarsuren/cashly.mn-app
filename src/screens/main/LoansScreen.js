@@ -250,7 +250,7 @@ const LoansScreen = ({ navigation }) => {
         )}
       </ScrollView>
 
-      {user?.kycStatus === 'approved' && user?.creditLimit > 0 && (
+{user && user.kycStatus === 'approved' && user.creditLimit > 0 && (
         <TouchableOpacity
           style={styles.fab}
           onPress={() => navigation.navigate('ApplyLoan')}

@@ -32,6 +32,11 @@ const Input = ({
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Ensure all boolean props are actual booleans
+  const isSecure = Boolean(secureTextEntry);
+  const isEditable = Boolean(editable);
+  const isMultiline = Boolean(multiline);
+
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
 
@@ -50,7 +55,7 @@ const Input = ({
           styles.inputContainer,
           isFocused && styles.inputContainerFocused,
           error && styles.inputContainerError,
-          !editable && styles.inputContainerDisabled,
+          !isEditable && styles.inputContainerDisabled,
         ]}
       >
         {/* Left Icon */}
@@ -64,26 +69,26 @@ const Input = ({
         <TextInput
           style={[
             styles.input,
-            multiline && styles.inputMultiline,
+            isMultiline && styles.inputMultiline,
             inputStyle,
           ]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
           placeholderTextColor={COLORS.textDisabled}
-          secureTextEntry={secureTextEntry && !showPassword}
+          secureTextEntry={isSecure && !showPassword}
           keyboardType={keyboardType}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          editable={editable}
+          editable={isEditable}
           maxLength={maxLength}
-          multiline={multiline}
+          multiline={isMultiline}
           numberOfLines={numberOfLines}
           {...props}
         />
 
         {/* Right Icon / Password Toggle */}
-        {secureTextEntry ? (
+        {isSecure ? (
           <TouchableOpacity
             onPress={togglePasswordVisibility}
             style={styles.iconContainer}
