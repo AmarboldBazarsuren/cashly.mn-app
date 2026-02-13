@@ -1,30 +1,19 @@
-/**
- * CASHLY APP - App Navigator
- * БАЙРШИЛ: Cashly.mn/App/src/navigation/AppNavigator.js
- * Үндсэн navigation бүтэц
- */
-
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-
 import { useAuth } from '../contexts/AuthContext';
 import COLORS from '../constants/colors';
 
-// Auth Screens
+// Screens
 import SplashScreen from '../screens/auth/SplashScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
-
-// Main Tab Screens
 import HomeScreen from '../screens/main/HomeScreen';
 import LoansScreen from '../screens/main/LoansScreen';
 import WalletScreen from '../screens/main/WalletScreen';
 import ProfileScreen from '../screens/main/ProfileScreen';
-
-// Other Screens
 import KYCScreen from '../screens/kyc/KYCScreen';
 import ApplyLoanScreen from '../screens/loan/ApplyLoanScreen';
 import LoanDetailScreen from '../screens/loan/LoanDetailScreen';
@@ -35,14 +24,33 @@ import TransactionHistoryScreen from '../screens/wallet/TransactionHistoryScreen
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Bottom Tab Navigator
-const BottomTabNavigator = () => {
+const tabScreenOptions = {
+  headerShown: false,
+  tabBarActiveTintColor: COLORS.primary,
+  tabBarInactiveTintColor: COLORS.textSecondary,
+  tabBarStyle: {
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.borderLight,
+    elevation: 8,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    height: 60,
+    paddingBottom: 8,
+    paddingTop: 8,
+  },
+};
+
+function BottomTabNavigator() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
+        ...tabScreenOptions,
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
+          let iconName = 'home-outline';
+          
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Loans') {
@@ -55,70 +63,32 @@ const BottomTabNavigator = () => {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textSecondary,
-        tabBarStyle: {
-          backgroundColor: COLORS.white,
-          borderTopWidth: 1,
-          borderTopColor: COLORS.borderLight,
-          elevation: 8,
-          shadowColor: COLORS.black,
-          shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
-        },
-        headerShown: false,
       })}
     >
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
-        options={{ tabBarLabel: 'Нүүр' }}
-      />
-      <Tab.Screen 
-        name="Loans" 
-        component={LoansScreen}
-        options={{ tabBarLabel: 'Зээл' }}
-      />
-      <Tab.Screen 
-        name="Wallet" 
-        component={WalletScreen}
-        options={{ tabBarLabel: 'Хэтэвч' }}
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen}
-        options={{ tabBarLabel: 'Профайл' }}
-      />
+      <Tab.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Нүүр' }} />
+      <Tab.Screen name="Loans" component={LoansScreen} options={{ tabBarLabel: 'Зээл' }} />
+      <Tab.Screen name="Wallet" component={WalletScreen} options={{ tabBarLabel: 'Хэтэвч' }} />
+      <Tab.Screen name="Profile" component={ProfileScreen} options={{ tabBarLabel: 'Профайл' }} />
     </Tab.Navigator>
   );
+}
+
+const stackScreenOptions = {
+  headerShown: false,
 };
 
-// Auth Stack
-const AuthStack = () => {
+function AuthStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+    <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
     </Stack.Navigator>
   );
-};
+}
 
-// Main Stack
-const MainStack = () => {
+function MainStack() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+    <Stack.Navigator screenOptions={stackScreenOptions}>
       <Stack.Screen name="MainTabs" component={BottomTabNavigator} />
       <Stack.Screen name="KYC" component={KYCScreen} />
       <Stack.Screen name="ApplyLoan" component={ApplyLoanScreen} />
@@ -128,10 +98,9 @@ const MainStack = () => {
       <Stack.Screen name="TransactionHistory" component={TransactionHistoryScreen} />
     </Stack.Navigator>
   );
-};
+}
 
-// App Navigator
-const AppNavigator = () => {
+function AppNavigator() {
   const { isAuthenticated, loading } = useAuth();
 
   if (loading) {
@@ -143,6 +112,6 @@ const AppNavigator = () => {
       {isAuthenticated ? <MainStack /> : <AuthStack />}
     </NavigationContainer>
   );
-};
+}
 
 export default AppNavigator;

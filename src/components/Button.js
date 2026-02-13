@@ -1,7 +1,6 @@
 /**
  * CASHLY APP - Button Component
- * БАЙРШИЛ: Cashly.mn/App/src/components/Button.js
- * Дахин ашиглагдах товч
+ * ЗАСВАРЛАСАН - size prop алдаа засварласан
  */
 
 import React from 'react';
@@ -14,8 +13,8 @@ import LAYOUT from '../constants/layout';
 const Button = ({
   title,
   onPress,
-  variant = 'primary', // primary | secondary | outline | text
-  size = 'md', // sm | md | lg
+  variant = 'primary',
+  size = 'md',
   disabled = false,
   loading = false,
   icon,
@@ -24,7 +23,6 @@ const Button = ({
   textStyle,
   ...props
 }) => {
-  // Variant styles
   const getVariantStyles = () => {
     switch (variant) {
       case 'primary':
@@ -56,7 +54,6 @@ const Button = ({
     }
   };
 
-  // Size styles
   const getSizeStyles = () => {
     switch (size) {
       case 'sm':
@@ -90,14 +87,13 @@ const Button = ({
   const sizeStyles = getSizeStyles();
   const isDisabled = disabled || loading;
 
-  // Button content
   const ButtonContent = () => (
     <>
       {loading ? (
         <ActivityIndicator color={variantStyles.textColor} size="small" />
       ) : (
         <>
-          {icon && <Text style={styles.icon}>{icon}</Text>}
+          {icon ? <Text style={styles.icon}>{icon}</Text> : null}
           <Text
             style={[
               styles.text,
@@ -115,7 +111,6 @@ const Button = ({
     </>
   );
 
-  // Container style
   const containerStyle = [
     styles.button,
     {
@@ -124,18 +119,17 @@ const Button = ({
       width: fullWidth ? '100%' : 'auto',
       opacity: isDisabled ? 0.6 : 1,
     },
-    variant === 'outline' && {
+    variant === 'outline' ? {
       borderWidth: 2,
       borderColor: variantStyles.borderColor,
       backgroundColor: COLORS.transparent,
-    },
-    variant === 'text' && {
+    } : null,
+    variant === 'text' ? {
       backgroundColor: COLORS.transparent,
-    },
+    } : null,
     style,
   ];
 
-  // Gradient button
   if (variantStyles.background && variant !== 'outline' && variant !== 'text') {
     return (
       <TouchableOpacity
@@ -156,7 +150,6 @@ const Button = ({
     );
   }
 
-  // Normal button (outline, text)
   return (
     <TouchableOpacity
       onPress={onPress}

@@ -1,7 +1,6 @@
 /**
  * CASHLY APP - Input Component
- * БАЙРШИЛ: Cashly.mn/App/src/components/Input.js
- * Текст оруулах талбар
+ * ЗАСВАРЛАСАН - Boolean type асуудал бүрэн арилгасан
  */
 
 import React, { useState } from 'react';
@@ -16,14 +15,14 @@ const Input = ({
   value,
   onChangeText,
   placeholder,
-  secureTextEntry = false,
+  secureTextEntry,
   keyboardType = 'default',
   error,
   icon,
   rightIcon,
   maxLength,
-  editable = true,
-  multiline = false,
+  editable,
+  multiline,
   numberOfLines = 1,
   style,
   inputStyle,
@@ -32,63 +31,52 @@ const Input = ({
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Ensure all boolean props are actual booleans
-  const isSecure = Boolean(secureTextEntry);
-  const isEditable = Boolean(editable);
-  const isMultiline = Boolean(multiline);
-
   const handleFocus = () => setIsFocused(true);
   const handleBlur = () => setIsFocused(false);
-
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   return (
     <View style={[styles.container, style]}>
-      {/* Label */}
-      {label && (
+      {label ? (
         <Text style={styles.label}>{label}</Text>
-      )}
+      ) : null}
 
-      {/* Input Container */}
       <View
         style={[
           styles.inputContainer,
-          isFocused && styles.inputContainerFocused,
-          error && styles.inputContainerError,
-          !isEditable && styles.inputContainerDisabled,
+          isFocused ? styles.inputContainerFocused : null,
+          error ? styles.inputContainerError : null,
+          editable === false ? styles.inputContainerDisabled : null,
         ]}
       >
-        {/* Left Icon */}
-        {icon && (
+        {icon ? (
           <View style={styles.iconContainer}>
             <Ionicons name={icon} size={LAYOUT.icon.sm} color={COLORS.textSecondary} />
           </View>
-        )}
+        ) : null}
 
-        {/* Text Input */}
         <TextInput
           style={[
             styles.input,
-            isMultiline && styles.inputMultiline,
+            multiline === true ? styles.inputMultiline : null,
             inputStyle,
           ]}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
           placeholderTextColor={COLORS.textDisabled}
-          secureTextEntry={isSecure && !showPassword}
+          secureTextEntry={secureTextEntry === true && !showPassword}
           keyboardType={keyboardType}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          editable={isEditable}
+          editable={editable === false ? false : true}
           maxLength={maxLength}
-          multiline={isMultiline}
+          multiline={multiline === true ? true : false}
           numberOfLines={numberOfLines}
           {...props}
         />
 
-        {/* Right Icon / Password Toggle */}
-        {isSecure ? (
+        {secureTextEntry === true ? (
           <TouchableOpacity
             onPress={togglePasswordVisibility}
             style={styles.iconContainer}
@@ -106,17 +94,15 @@ const Input = ({
         ) : null}
       </View>
 
-      {/* Error Message */}
-      {error && (
+      {error ? (
         <Text style={styles.errorText}>{error}</Text>
-      )}
+      ) : null}
 
-      {/* Character Count */}
-      {maxLength && value && (
+      {maxLength && value ? (
         <Text style={styles.characterCount}>
           {value.length}/{maxLength}
         </Text>
-      )}
+      ) : null}
     </View>
   );
 };

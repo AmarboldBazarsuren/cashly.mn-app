@@ -1,10 +1,9 @@
 /**
  * CASHLY APP - Splash Screen
- * БАЙРШИЛ: Cashly.mn/App/src/screens/auth/SplashScreen.js
- * App эхлэх үеийн дэлгэц
+ * ЗАСВАРЛАСАН - ActivityIndicator size prop
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import COLORS from '../../constants/colors';
@@ -17,20 +16,17 @@ const SplashScreen = () => {
       style={styles.container}
     >
       <View style={styles.content}>
-        {/* Logo / App Name */}
         <Text style={styles.logo}>💰</Text>
         <Text style={styles.appName}>CASHLY</Text>
         <Text style={styles.tagline}>Хурдан, Хялбар, Найдвартай</Text>
         
-        {/* Loading Indicator */}
         <ActivityIndicator 
-          size="large" 
+          size="small"
           color={COLORS.white} 
           style={styles.loader}
         />
       </View>
       
-      {/* Version */}
       <Text style={styles.version}>v1.0.0</Text>
     </LinearGradient>
   );
